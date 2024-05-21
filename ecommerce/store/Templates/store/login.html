@@ -1,0 +1,88 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+      <div class="card my-5">
+
+        <form class="card-body cardbody-color p-lg-5" id="form">
+
+          <div class="text-center">
+            <img src="https://cdn.pixabay.com/photo/2016/03/31/19/56/avatar-1295397__340.png" class="img-fluid profile-image-pic img-thumbnail rounded-circle my-3"
+              width="200px" alt="profile">
+          </div>
+
+          <div class="mb-3">
+            <input required type="text" class="form-control" name="Username" id="Username" aria-describedby="emailHelp"
+              placeholder="User Name">
+          </div>
+          <div class="mb-3">
+            <input required type="password" class="form-control" name="password" id="password" placeholder="password">
+          </div>
+          <div class="text-center"><button id="btnlogin" class="btn btn-primary btn-color px-5 mb-5 w-100">Login</button></div>
+          <div id="emailHelp" class="form-text text-center mb-5 text-dark">Not
+            Registered? <a href="{% url 'signup' %}" class="text-light bg-dark fw-bold"> Create an
+              Account</a>
+          </div>
+        </form>
+      </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+    var form = document.getElementById('form')
+    form.addEventListener('submit', function(e){
+	    	e.preventDefault()
+	    	console.log('Form Submitted...')
+	    })
+    document.getElementById('btnlogin').addEventListener('click', function(e){
+	    	loginFormData()
+	    })
+
+    function loginFormData(){
+      console.log("Login Form Clicked");
+      var userFormData = {
+				'username':null,
+				'password':null,
+			}
+      
+      if (user == 'AnonymousUser'){
+	    		userFormData.username = form.Username.value
+	    		userFormData.password = form.password.value
+	    }
+      else{
+        alert('User Logged In');
+        return false;
+      }
+
+
+      var url = "/login_process/"
+	    	fetch(url, {
+	    		method:'POST',
+	    		headers:{
+	    			'Content-Type':'applicaiton/json',
+	    			'X-CSRFToken':csrftoken,
+	    		}, 
+	    		body:JSON.stringify({'form':userFormData}),
+	    		
+	    	})
+	    	.then((response) => response.json())
+	    	.then((data) => {
+				  console.log('Success:', data);
+          if(data == 'Success')
+          {
+            window.location.href = "{% url 'store' %}"
+          }
+          else{
+            alert('Please enter valid credentials')
+          }
+				  //alert('Login completed');  
+				  //window.location.href = "{% url 'store' %}"
+
+				})
+
+
+    }
+
+</script>
+{% endblock content %}
