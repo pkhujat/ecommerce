@@ -5,6 +5,10 @@ from django.template.loader import render_to_string
 import json 
 import datetime
 from .models import * 
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from .serializers import ProductSerializer
+from .forms import ProductFilterForm
 
 def store(request):
 	request_search_type = request.GET.get("searchterm")
@@ -23,7 +27,23 @@ def store(request):
 		products = Product.objects.filter(name__contains=request_search_type)
 	else:
 		products = Product.objects.all()
-	context = {'products':products, 'cartItems':cartItems}
+	
+	if request.method == 'GET':
+		filter_form = ProductFilterForm(request.GET)
+		if filter_form.is_valid():
+			category = filter_form.cleaned_data.get('category')
+			min_price = filter_form.cleaned_data.get('min_price')
+			max_price = filter_form.cleaned_data.get('max_price')
+			if category:
+				products = products.filter(category=category)
+			if min_price:
+				products = products.filter(price__gte=min_price)
+			if max_price:
+				products = products.filter(price__lte=max_price)
+		else:
+			filter_form = ProductFilterForm() 
+
+	context = {'products':products, 'cartItems':cartItems,'filter_form':filter_form}
 	return render(request, 'store/store.html', context)
 
 def filter_store(request):
@@ -186,4 +206,30 @@ def signup_process(request):
 		return JsonResponse("Success",safe=False)
 	else:
 		return JsonResponse("Error",safe=False)
+
+@api_view(['GET'])
+def getdata(request):
+	product = Product.objects.all()
+	serializer = ProductSerializer(product,many=True)
+	return Response(serializer.data)
+
+
+def product_list(request):
+    products = Product.objects.all()
+    if request.method == 'GET':
+        filter_form = ProductFilterForm(request.GET)
+        if filter_form.is_valid():
+            category = filter_form.cleaned_data.get('category')
+            min_price = filter_form.cleaned_data.get('min_price')
+            max_price = filter_form.cleaned_data.get('max_price')
+            if category:
+                products = products.filter(category=category)
+            if min_price:
+                products = products.filter(price__gte=min_price)
+            if max_price:
+                products = products.filter(price__lte=max_price)
+    else:
+        filter_form = ProductFilterForm() 
+    print(filter_form)  # Print form to console for debugging
+    return render(request, 'store/store.html', {'products': products, 'filter_form': filter_form})
 

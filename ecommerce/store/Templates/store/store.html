@@ -1,6 +1,26 @@
 {% extends 'store/main.html' %}
 {% load static %}
 {% block content %}
+<!-- <div class="row justify-content-center">
+	<div class="col-12 col-md-10 col-lg-8">
+		<form method="get" class="form-inline">
+			{{ filter_form.non_field_errors }}
+			<div>
+				<label class="form-control" for="{{ filter_form.category.id_for_label }}">Category:</label>
+				{{ filter_form.category }}
+			</div>
+			<div>
+				<label class="form-control" for="{{ filter_form.min_price.id_for_label }}">Min Price:</label>
+				{{ filter_form.min_price }}
+			</div>
+			<div>
+				<label class="form-control" for="{{ filter_form.max_price.id_for_label }}">Max Price:</label>
+				{{ filter_form.max_price }}
+			</div>
+			<button type="submit" class="btn btn-primary">Apply Filters</button>
+		</form>
+	</div>
+	</div> -->	
 	<div class="row justify-content-center">
 		<div class="col-12 col-md-10 col-lg-8">
 			<form class="card card-sm">
@@ -22,7 +42,52 @@
 		</div>
 		<!--end of col-->
 	</div>
-	<div class="row">	
+	<div class="row">
+		<div class="sidebar col-lg-2">
+			
+				<div class="sidebar">
+					<!-- Category Filter -->
+					<form method="get">
+					<div class="card mb-3">
+					
+						{{ filter_form.non_field_errors }}
+						<div class="card-header">
+							<label class="" for="{{ filter_form.category.id_for_label }}">category:</label>
+						</div>
+						<div class="card-body">
+						
+							<ul class="list-group">                            
+								{{ filter_form.category }}
+								<!-- Add more categories -->
+							</ul>
+						</div>
+					</div>
+					<!-- Price Range Filter -->
+					<div class="card mb-3">
+						<div class="card-header">
+							Price Range
+						</div>
+						<div class="card-body">
+							<label class="" for="{{ filter_form.min_price.id_for_label }}">Min Price:</label>
+							{{ filter_form.min_price }}
+							<label class="" for="{{ filter_form.max_price.id_for_label }}">Max Price:</label>
+							{{ filter_form.max_price }}
+						</div>
+					</div>
+					<div class="card mb-3">
+						<div class="card-header">
+						   
+						</div>
+						<div class="card-body">
+						   <button type="submit" class="btn btn-primary">Apply Filters</button>
+					
+						</div>
+					</div>
+				</form>
+				</div>
+			
+		</div>
+		<div class="row col-lg-10">
 		{% for product in products %}
 		<div class="col-lg-4">
 			<img class="thumbnail" src="{{product.imageURL}}">
@@ -37,6 +102,7 @@
 			</div>
 		</div>
 		{% endfor %}
+		</div>
 	
 	</div>
 {% endblock content %}

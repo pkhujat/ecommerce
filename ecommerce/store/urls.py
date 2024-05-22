@@ -13,5 +13,6 @@ urlpatterns = [
     path('logout_user/',views.logout_user,name="logout_user"),
     path('signup/',views.signup_form,name="signup"),
     path('signup_process/',views.signup_process,name="signup_process"),
-    path('filter_store/',views.filter_store,name="filter_store")
+    path('filter_store/',views.filter_store,name="filter_store"),
+    path('api/',views.getdata,name="api"),
 ]
